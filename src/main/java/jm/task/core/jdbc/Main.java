@@ -15,13 +15,9 @@ public class Main {
 
         // Add users
         userService.saveUser("John", "Malkovich", (byte) 25);
-        System.out.println("User с именем – John добавлен в базу данных");
         userService.saveUser("Ann", "Adams", (byte) 35);
-        System.out.println("User с именем – Ann добавлен в базу данных");
         userService.saveUser("Ben", "Wallis", (byte) 27);
-        System.out.println("User с именем – Ben добавлен в базу данных");
         userService.saveUser("Alen", "Dalles", (byte) 33);
-        System.out.println("User с именем – Alen добавлен в базу данных");
 
         // Delimiter
         System.out.println();

@@ -8,74 +8,61 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    private final String table = "users";
-
     public UserDaoJDBCImpl() {
     }
 
     public void createUsersTable() {
-        String sql = String.format("""
-            CREATE TABLE IF NOT EXISTS %s (
-                id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                name VARCHAR(60),
-                lastName VARCHAR(60),
-                age TINYINT
-            )""", table);
-
         try (Connection con = Util.getConnection();
              Statement stmt = con.createStatement()) {
-            stmt.execute(sql);
+            stmt.execute("""
+                    CREATE TABLE IF NOT EXISTS users (
+                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        name VARCHAR(60),
+                        lastName VARCHAR(60),
+                        age TINYINT)
+                """);
         } catch (SQLException e) {
-            logError(e);
+            e.printStackTrace();
         }
     }
 
     public void dropUsersTable() {
-        String sql = String.format("DROP TABLE IF EXISTS %s", table);
-
         try (Connection con = Util.getConnection();
              Statement stmt = con.createStatement()) {
-            stmt.execute(sql);
+            stmt.execute("DROP TABLE IF EXISTS users");
         } catch (SQLException e) {
-            logError(e);
+            e.printStackTrace();
         }
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        String sql = String.format(
-            "INSERT INTO %s (name, lastName, age) VALUES (?, ?, ?)",
-            table
-        );
-
         try (Connection con = Util.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
+             PreparedStatement pstmt = con.prepareStatement(
+                 "INSERT INTO users (name, lastName, age) VALUES (?, ?, ?)"
+             )) {
             pstmt.setString(1, name);
             pstmt.setString(2, lastName);
             pstmt.setByte(3, age);
             pstmt.execute();
         } catch (SQLException e) {
-            logError(e);
+            e.printStackTrace();
         }
     }
 
     public void removeUserById(long id) {
-        String sql = String.format("DELETE FROM %s WHERE id = ?", table);
-
         try (Connection con = Util.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
+             PreparedStatement pstmt = con.prepareStatement("DELETE FROM users WHERE id = ?")) {
             pstmt.setLong(1, id);
             pstmt.execute();
         } catch (SQLException e) {
-            logError(e);
+            e.printStackTrace();
         }
     }
 
     public List<User> getAllUsers() {
-        String sql = String.format("SELECT * FROM %s", table);
-
         try (Connection con = Util.getConnection();
              Statement stmt = con.createStatement();
-             ResultSet resultSet = stmt.executeQuery(sql)) {
+             ResultSet resultSet = stmt.executeQuery("SELECT * FROM users")) {
 
             List<User> users = new ArrayList<>();
             while (resultSet.next()) {
@@ -89,24 +76,18 @@ public class UserDaoJDBCImpl implements UserDao {
 
             return users;
         } catch (SQLException e) {
-            logError(e);
+            e.printStackTrace();
         }
 
         return null;
     }
 
     public void cleanUsersTable() {
-        String sql = String.format("TRUNCATE %s", table);
-
         try (Connection con = Util.getConnection();
              Statement stmt = con.createStatement()) {
-            stmt.execute(sql);
+            stmt.execute("TRUNCATE users");
         } catch (SQLException e) {
-            logError(e);
+            e.printStackTrace();
         }
-    }
-
-    private void logError(Exception e) {
-        System.out.println("Error occurred while executing sql: " + e.getMessage());
     }
 }
