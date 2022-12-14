@@ -22,11 +22,6 @@ public class Util {
             System.exit(-1);
         }
 
-        if (connection == null) {
-            System.out.println("Can't connect to db");
-            System.exit(-1);
-        }
-
         return connection;
     }
 }
