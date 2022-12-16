@@ -26,9 +26,9 @@ public class Util {
 
         try {
             connection = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/pre_project_1",
-                "admin",
-                "123"
+                String.format("jdbc:mysql://%s:%d/%s", host, port, db),
+                user,
+                password
             );
         } catch (SQLException e) {
             e.printStackTrace();
